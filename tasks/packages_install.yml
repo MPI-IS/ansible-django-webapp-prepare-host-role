@@ -20,6 +20,8 @@
   with_items:
     - uwsgi-plugin-python3
     - python3
+    - python3-pip
+    - python3-venv
   when: python_major==3
 
 - block:
@@ -34,16 +36,16 @@
 
   - name: Enable Apache module (mod-ssl)
     apache2_module: state=present name=ssl
-  
+
   - name: Enable Apache uWSGI module (mod-uwsgi)
     apache2_module: state=present name=uwsgi
 
   - name: Enable Apache module (mod-rewrite)
     apache2_module: state=present name=rewrite
-  
+
   - name: Enable Apache module (mod-proxy)
     apache2_module: state=present name=proxy
-  
+
   when: webserver=='apache2'
 
 - name: install NGinx on the host
@@ -51,7 +53,7 @@
   with_items:
     - nginx
   when: webserver=='nginx'
-  
+
 
 - name: install additional packages on the host
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
