@@ -5,6 +5,9 @@
 # default webserver in front of django
 webserver: nginx
 
+# default database backend
+database: sqlite3
+
 # major python version
 python_major: 2
 

@@ -32,6 +32,9 @@
   - name: install postgres database on the host
     apt: name="postgresql-{{postgresql_version}}" update_cache=yes state=present cache_valid_time=3600
 
+  - name: install python package
+    apt: name="python3-psycopg2" update_cache=yes state=present cache_valid_time=3600
+
   - name: create postgres cluster (automatic creation during installation fails)
     shell: pg_createcluster {{postgresql_version}} main --start || true
 

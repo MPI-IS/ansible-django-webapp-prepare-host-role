@@ -1,7 +1,7 @@
-# Grants particular rights on the system for the deployment user. 
+# Grants particular rights on the system for the deployment user.
 
-# sudoers configuration for the deployment agent: this one allows the deployment user
-# to restart uWSGI
+# sudoers configuration for the deployment agent: this one allows the
+# deployment user to restart uWSGI and run psql as postgres user.
 - block:
   - name: make the deployment agent be able to restart UWSGI
     template: >
