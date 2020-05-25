@@ -7,5 +7,6 @@
   when: item is undefined
   with_items:
     - webserver
+    - database
     - django_deployment_user_ssh_public_key
     - host_additional_packages
