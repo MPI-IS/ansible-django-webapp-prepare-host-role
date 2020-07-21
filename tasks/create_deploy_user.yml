@@ -17,6 +17,4 @@
     path: "{{ getent_passwd[django_deployment_user][4] }}"
     state: directory
     mode: "u+rx,g+rx"
-  when: (check_deploy_user_getent|succeeded) and (ansible_distribution=="Ubuntu")
-
-  
+  when: (check_deploy_user_getent is succeeded) and (ansible_distribution=="Ubuntu")
