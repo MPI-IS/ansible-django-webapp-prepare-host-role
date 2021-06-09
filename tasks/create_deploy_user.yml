@@ -1,22 +1,70 @@
 
-- name: create deployment user "{{ django_deployment_user }}"
-  action: user name="{{ django_deployment_user }}" comment="{{ django_deployment_user }}" state=present
+# this is a bit particular as the bambooagent is an LDAP user
+# but we still want the agent to have a home folder
+- name: Check if the local user exists
+  getent:
+    database: passwd
+    key: "{{ django_deployment_user }}"
+    split: ':'
+    fail_key: no
 
-- name: adding keys for deployment user
+- name: Set variable for user existence
+  set_fact:
+    no_user: "{{ getent_passwd[django_deployment_user]==None }}"
+
+- name: Ensuring home of "{{ django_deployment_user }}" exists (2)
+  file:
+    path: "{{ getent_passwd[django_deployment_user][4] }}"
+    state: directory
+    owner: "{{ django_deployment_user }}"
+  when: not no_user
+
+- name: Creating non-existing user "{{ django_deployment_user }}"
+  user:
+    name: "{{ django_deployment_user }}"
+    comment: "Bamboo agent"
+    state: present
+    group: "{{ bambooagent_group }}"
+    createhome: yes
+  when: no_user
+
+- name: Ensuring root folder of the bamboo agent exists
+  file:
+    path: "{{ bambooagent_install_root }}"
+    state: directory
+    owner: "{{ bambooagent_user }}"
+    group: "{{ bambooagent_group }}"
+  when: no_user
+
+- name: Adding keys for deployment user
   authorized_key: user="{{ django_deployment_user }}" key="{{ django_deployment_user_ssh_public_key }}"
 
-- getent: 
-    database: passwd 
-    key: "{{ django_deployment_user }}" 
+- getent:
+    database: passwd
+    key: "{{ django_deployment_user }}"
     split: ':'
   register: check_deploy_user_getent
   when: ansible_distribution=="Ubuntu"
 
-- name: "preventing user from changing anything in its home"
+- name: Preventing user from changing anything in its home
   file:
     path: "{{ getent_passwd[django_deployment_user][4] }}"
     state: directory
     mode: "u+rx,g+rx"
-  when: (check_deploy_user_getent|succeeded) and (ansible_distribution=="Ubuntu")
+  when: (check_deploy_user_getent is succeeded) and (ansible_distribution=="Ubuntu")
 
-  
+- name: Creates the login hiding file
+  file:
+    path: "/var/lib/AccountsService/users/{{ bambooagent_user }}"
+    state: touch
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Hides the user from the login screen Ubuntu
+  ini_file:
+    dest: /var/lib/AccountsService/users/{{ bambooagent_user }}
+    section: User
+    option: SystemAccount
+    value: true
+    backup: yes

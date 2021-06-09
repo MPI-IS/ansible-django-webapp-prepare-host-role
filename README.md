@@ -20,11 +20,11 @@ Role Variables
 
 |variable|default|meaning|
 |----------|---------|---------|
+|`database` | `sqlite3` | if `postgresql`, installs PostgreSQL |
 |`django_deployment_user` | **required** | the user that will perform the deployments |
-|`webserver`| `nginx` | the type of webserver serving the application (in front of uWSGI). Supported values are `apache2` and `nginx`|
 |`django_deployment_user_ssh_public_key`| **required** | the ssh key of the deployment user|
 |`host_additional_packages`| `[]` | additional packages to install on the host, if your web application needs eg. `rabbitmq`|
-|`python_major`| `3` | Major version of python|
+|`webserver`| `nginx` | the type of webserver serving the application (in front of uWSGI). Supported values are `apache2` and `nginx`|
 
 After deployment, the user will not be allowed to change *his* home folder content.
 

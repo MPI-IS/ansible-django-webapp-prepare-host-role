@@ -8,8 +8,5 @@ webserver: nginx
 # Default database: sqlite3 or postgresql
 database: sqlite3
 
-# major python version
-python_major: 3
-
 # additional packages to install on the host system
 host_additional_packages: []

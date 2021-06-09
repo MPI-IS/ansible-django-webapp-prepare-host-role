@@ -1,31 +1,22 @@
 # Installs the necessary packages on the target host
 
-- name: install packages on the host
+- name: Install packages on the host
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
   loop:
     - uwsgi
     - acl
     - unzip
 
-- name: install python2 packages on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop:
-    - uwsgi-plugin-python
-    - python-pip
-    - python-virtualenv
-  when: python_major==2
-
-- name: install python3 packages on the host
+- name: Install python3 packages on the host
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
   loop:
     - uwsgi-plugin-python3
     - python3
     - python3-pip
     - python3-venv
-  when: python_major==3
 
 - block:
-  - name: install Apache on the host
+  - name: Install Apache on the host
     apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
     loop:
       - apache2
@@ -48,7 +39,7 @@
 
   when: webserver=='apache2'
 
-- name: install NGinx on the host
+- name: Install NGinx on the host
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
   loop:
     - nginx
@@ -63,6 +54,6 @@
     - libpq-dev
   when: database=='postgresql'
 
-- name: install additional packages on the host
+- name: Install additional packages on the host
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
   loop: "{{ host_additional_packages }}"
