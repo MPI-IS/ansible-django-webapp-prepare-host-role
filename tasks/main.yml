@@ -9,7 +9,7 @@
 - include: create_deploy_user.yml
   tags:
     - django-webservices:host-configuration
-    
+
 - include: packages_install.yml
   tags:
     - django-webservices:host-configuration

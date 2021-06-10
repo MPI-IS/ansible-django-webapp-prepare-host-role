@@ -24,20 +24,13 @@
     name: "{{ django_deployment_user }}"
     comment: "Bamboo agent"
     state: present
-    group: "{{ bambooagent_group }}"
     createhome: yes
   when: no_user
 
-- name: Ensuring root folder of the bamboo agent exists
-  file:
-    path: "{{ bambooagent_install_root }}"
-    state: directory
-    owner: "{{ bambooagent_user }}"
-    group: "{{ bambooagent_group }}"
-  when: no_user
-
 - name: Adding keys for deployment user
-  authorized_key: user="{{ django_deployment_user }}" key="{{ django_deployment_user_ssh_public_key }}"
+  authorized_key:
+    user: "{{ django_deployment_user }}"
+    key: "{{ django_deployment_user_ssh_public_key }}"
 
 - getent:
     database: passwd
@@ -55,7 +48,7 @@
 
 - name: Creates the login hiding file
   file:
-    path: "/var/lib/AccountsService/users/{{ bambooagent_user }}"
+    path: "/var/lib/AccountsService/users/{{ django_deployment_user }}"
     state: touch
     owner: root
     group: root
@@ -63,7 +56,7 @@
 
 - name: Hides the user from the login screen Ubuntu
   ini_file:
-    dest: /var/lib/AccountsService/users/{{ bambooagent_user }}
+    dest: /var/lib/AccountsService/users/{{ django_deployment_user }}
     section: User
     option: SystemAccount
     value: true

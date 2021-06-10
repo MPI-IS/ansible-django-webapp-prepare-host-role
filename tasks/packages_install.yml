@@ -1,15 +1,23 @@
 # Installs the necessary packages on the target host
 
 - name: Install packages on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop:
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+    cache_valid_time: 3600
+  with_items:
     - uwsgi
     - acl
     - unzip
 
 - name: Install python3 packages on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop:
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+    cache_valid_time: 3600
+  with_items:
     - uwsgi-plugin-python3
     - python3
     - python3-pip
@@ -17,8 +25,12 @@
 
 - block:
   - name: Install Apache on the host
-    apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-    loop:
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+      state: present
+      cache_valid_time: 3600
+    with_items:
       - apache2
       - libapache2-mod-uwsgi
 
@@ -40,14 +52,20 @@
   when: webserver=='apache2'
 
 - name: Install NGinx on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop:
-    - nginx
+  apt:
+    name: nginx
+    update_cache: yes
+    state: present
+    cache_valid_time: 3600
   when: webserver=='nginx'
 
 - name: Install PostgreSQL on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop:
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+    cache_valid_time: 3600
+  with_items:
     - python3-psycopg2
     - postgresql
     - postgresql-contrib
@@ -55,5 +73,9 @@
   when: database=='postgresql'
 
 - name: Install additional packages on the host
-  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
-  loop: "{{ host_additional_packages }}"
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+    cache_valid_time: 3600
+  with_items: "{{ host_additional_packages }}"
